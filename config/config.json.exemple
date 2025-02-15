@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "USER_DB",
+    "password": "PASS_DB",
+    "database": "NAME_DB",
+    "host": "LINK_OR_NAME_HOST",
+    "dialect": "postgres"
+  }
+}
