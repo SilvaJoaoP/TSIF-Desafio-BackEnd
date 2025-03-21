@@ -1,11 +1,12 @@
 const { Router } = require("express");
 const authMiddleware = require("../middlewares/auth");
-const authRoutes = require("./auth.routes");
-const taskRoutes = require("./task.routes");
+const authRouting = require("./auth.routes");
+const taskRouting = require("./task.routes");
+const tagRouting = require("./tag.routes");
 
 const routes = Router();
 
-routes.use("/auth", authRoutes);
+routes.use("/auth", authRouting);
 
 routes.use(authMiddleware);
 
