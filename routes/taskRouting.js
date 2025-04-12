@@ -2,30 +2,38 @@ const express = require("express");
 const router = express.Router();
 const { Task, Tag } = require("../models");
 
-// Criar uma nova tarefa
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const task = await Task.create(req.body);
+    const task = await Task.create({
+      ...req.body,
+      UserId: req.user.id 
+    });
     res.json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Listar todas as tarefas
-router.get("/", async (req, res) => {
+router.get("/list", async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await Task.findAll({
+      where: { UserId: req.user.id } 
+    });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Buscar uma tarefa específica
-router.get("/:id", async (req, res) => {
+router.get("/list/:id", async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findOne({
+      where: { 
+        id: req.params.id, 
+        UserId: req.user.id
+      }
+    });
+    
     if (!task) return res.status(404).json({ error: "Tarefa não encontrada" });
     res.json(task);
   } catch (err) {
@@ -33,10 +41,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Atualizar uma tarefa
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findOne({
+      where: { 
+        id: req.params.id, 
+        UserId: req.user.id
+      }
+    });
+    
     if (!task) return res.status(404).json({ error: "Tarefa não encontrada" });
     await task.update(req.body);
     res.json(task);
@@ -45,10 +58,15 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Deletar uma tarefa
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findOne({
+      where: { 
+        id: req.params.id, 
+        UserId: req.user.id 
+      }
+    });
+    
     if (!task) return res.status(404).json({ error: "Tarefa não encontrada" });
     await task.destroy();
     res.json({ message: "Tarefa removida com sucesso" });
@@ -57,20 +75,25 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Atribuir tags a uma tarefa
-router.put("/:taskId/tags", async (req, res) => {
+router.put("/add/:taskId/tags", async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.taskId);
+    const task = await Task.findOne({
+      where: { 
+        id: req.params.taskId, 
+        UserId: req.user.id 
+      }
+    });
+    
     if (!task) return res.status(404).json({ error: "Tarefa não encontrada" });
 
     const tags = await Tag.findAll({
       where: {
         id: req.body.tagIds,
+        UserId: req.user.id
       },
     });
 
-    await task.setTags(tags); // Associa as tags à tarefa
-
+    await task.setTags(tags);
     res.json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });

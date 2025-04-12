@@ -16,6 +16,12 @@ const User = UserModel(sequelize, Sequelize.DataTypes);
 Task.belongsToMany(Tag, { through: "TaskTag", as: "tags" });
 Tag.belongsToMany(Task, { through: "TaskTag", as: "tasks" });
 
+User.hasMany(Task);
+Task.belongsTo(User);
+
+User.hasMany(Tag);
+Tag.belongsTo(User);
+
 module.exports = {
   sequelize,
   Task,

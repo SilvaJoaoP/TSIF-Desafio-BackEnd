@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     "TaskTag",
     {
       TaskId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         references: {
           model: "Tasks",
           key: "id",
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       },
       TagId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         references: {
           model: "Tags",
           key: "id",

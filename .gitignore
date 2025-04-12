@@ -29,5 +29,6 @@ build/
 .DS_Store
 Thumbs.db
 
-#INFO
+#INFO/CONFIG
 /config/config.json
+.env

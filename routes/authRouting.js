@@ -4,30 +4,25 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const router = express.Router();
 
-// Registro de usuário
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
         
-        // Verifica se o usuário já existe
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ error: 'Email já registrado' });
         }
 
-        // Cria hash da senha
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        // Cria novo usuário
         const user = await User.create({
             name,
             email,
             password: hashedPassword
         });
 
-        // Gera token JWT
         const token = jwt.sign(
-            { id: user.id },  // Apenas o ID para compatibilidade com o middleware auth.js
+            { id: user.id }, 
             process.env.JWT_SECRET || 'root',
             { expiresIn: '24h' }
         );
@@ -46,26 +41,22 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        // Busca usuário
+
         const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
-        // Verifica senha
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
-        // Gera token JWT
         const token = jwt.sign(
-            { id: user.id },  // Mantém apenas o ID para compatibilidade com o middleware
+            { id: user.id },  
             process.env.JWT_SECRET || 'root',
             { expiresIn: '24h' }
         );
@@ -84,7 +75,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Rota para verificar se o token é válido
+// Rota para verificar se o token é válido -  sem teste
 router.get('/verify', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;

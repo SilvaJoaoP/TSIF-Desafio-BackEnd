@@ -1,0 +1,39 @@
+Criar Usuário
+POST http://localhost:3000/auth/register
+
+Fazer Login
+POST http://localhost:3000/auth/login
+
+Criar Tarefa
+POST http://localhost:3000/tasks/create
+
+Listar Todas as Tarefas
+GET http://localhost:3000/tasks/list
+
+Listar Tarefas do Usuário
+GET http://localhost:3000/tasks/list/ID
+
+Atualizar Tarefa
+PUT http://localhost:3000/tasks/update/ID
+
+Deletar Tarefa
+DEL http://localhost:3000/tasks/delete/ID
+
+Criar Tag
+POST http://localhost:3000/tags/create
+
+Listar Tags
+GET http://localhost:3000/tags/list
+
+Atualizar Tag
+PUT http://localhost:3000/tags/update/ID
+
+Deletar Tag
+DEL http://localhost:3000/tags/delete/ID
+
+Atribuir Tag a Tarefa
+PUT http://localhost:3000/tasks/add/ID/tags
+(id no body -
+{
+  "tagIds": ID
+} )
