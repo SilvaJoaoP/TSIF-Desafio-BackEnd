@@ -7,7 +7,6 @@ interface TagFormProps {
   onCancelEdit?: () => void;
 }
 
-// Lista de cores predefinidas para escolher
 const predefinedColors = [
   "#FF5252", "#FF4081", "#E040FB", "#7C4DFF", 
   "#536DFE", "#448AFF", "#40C4FF", "#18FFFF", 
@@ -40,15 +39,13 @@ const TagForm: React.FC<TagFormProps> = ({
       let newTag: Tag;
       
       if (editingTag) {
-        // Atualizar tag existente
         newTag = await updateTag(editingTag.id, { name, color });
       } else {
-        // Criar nova tag
         newTag = await createTag({ name, color });
       }
       
       setName('');
-      // Não reseta a cor para facilitar criação de múltiplas tags com a mesma cor
+
       onTagCreated(newTag);
       if (editingTag && onCancelEdit) {
         onCancelEdit();

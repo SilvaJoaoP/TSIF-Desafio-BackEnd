@@ -1,22 +1,20 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import api from '../lib/axios'; // Importa a instância do Axios
-import * as AuthService from '../services/authService'; // Importa as funções de serviço
+import api from '../lib/axios';
+import * as AuthService from '../services/authService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
-// Tipagem para o usuário (ajuste conforme necessário)
 interface User {
   id: number;
   name: string;
   email: string;
 }
 
-// Tipagem para os dados de registro
 interface RegisterData {
   name: string;
   email: string;
   password: string;
 }
 
-// Tipagem para as credenciais de login
 interface LoginCredentials {
   email: string;
   password: string;
@@ -26,70 +24,84 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean; // Para indicar carregamento inicial
+  isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
   register: (data: RegisterData) => Promise<void>;
 }
 
-// Cria o Contexto
+const TOKEN_KEY = 'authToken';
+const USER_KEY = 'authUser';
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Cria o Provider
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
-  const [isLoading, setIsLoading] = useState(true); // Começa carregando
+  const storedUser = localStorage.getItem(USER_KEY);
+  const initialUser = storedUser ? JSON.parse(storedUser) : null;
+  
+  const [user, setUser] = useState<User | null>(initialUser);
+  const [token, setToken] = useState<string | null>(localStorage.getItem(TOKEN_KEY));
+  const [isLoading, setIsLoading] = useState(!!localStorage.getItem(TOKEN_KEY)); 
 
-  // Efeito para verificar o token inicial e buscar dados do usuário
   useEffect(() => {
     const verifyTokenAndFetchUser = async () => {
-      const storedToken = localStorage.getItem('authToken');
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      
       if (storedToken) {
         console.log("AuthContext: Token encontrado no localStorage, validando...");
         setToken(storedToken);
-        // Configura o header padrão do Axios para futuras requisições
+        
         api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+        
         try {
-          // Usa a rota /auth/verify do backend para obter os dados do usuário
-          // O backend já verifica o token nesta rota
           console.log("AuthContext: Tentando buscar dados do usuário via /auth/verify...");
-          const response = await api.get<{ user: User }>('/auth/verify'); // Ajuste a tipagem se a resposta for diferente
-          setUser(response.data.user); // Define o usuário no estado
+          const response = await api.get<{ user: User }>('/auth/verify');
+          
+          setUser(response.data.user);
+          localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+          
           console.log("AuthContext: Dados do usuário carregados:", response.data.user);
-        } catch (error: any) { // Use 'any' ou uma tipagem mais específica para o erro do Axios
-          console.error("AuthContext: Token inválido ou erro ao buscar usuário via /auth/verify.", error.response?.data || error.message);
-          // Limpa o estado e o localStorage se o token for inválido ou ocorrer erro
-          localStorage.removeItem('authToken');
-          setToken(null);
-          setUser(null);
-          delete api.defaults.headers.common['Authorization'];
+        } catch (error: any) {
+          console.error("AuthContext: Token inválido ou erro ao buscar usuário", 
+                        error.response?.data || error.message);
+          
+          logout();
         }
-    } else {
-       console.log("AuthContext: Nenhum token no localStorage.");
-    }
-    
-    setIsLoading(false); // Mark loading as complete
-  };
+      } else {
+        console.log("AuthContext: Nenhum token no localStorage.");
+      }
+      
+      setIsLoading(false);
+    };
 
-  verifyTokenAndFetchUser();
-  }, []); // Executa apenas uma vez na montagem do componente
-  const login = async (credentials: AuthService.LoginCredentials) => {
+    if (isLoading) {
+      verifyTokenAndFetchUser();
+    }
+  }, [isLoading]);
+
+  const login = async (credentials: LoginCredentials) => {
     try {
+      setIsLoading(true);
       const response = await AuthService.login(credentials);
+      
+      localStorage.setItem(TOKEN_KEY, response.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(response.user));
+      
       setToken(response.token);
       setUser(response.user);
-      localStorage.setItem('authToken', response.token);
+      
       api.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
       console.log("AuthContext: Login bem-sucedido.");
+      
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("AuthContext: Erro no login", error);
       throw error;
     }
   };
   
-  // No método register
-  const register = async (data: AuthService.RegisterData) => {
+  const register = async (data: RegisterData) => {
     try {
       await AuthService.register(data);
       console.log("AuthContext: Registro bem-sucedido (usuário precisa fazer login).");
@@ -101,19 +113,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     console.log("AuthContext: Fazendo logout.");
+    
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    
     setUser(null);
     setToken(null);
-    localStorage.removeItem('authToken');
+    
     delete api.defaults.headers.common['Authorization'];
-    // Opcional: redirecionar para /login aqui ou deixar a página/componente fazer isso
   };
 
-  // Calcula isAuthenticated baseado na presença do token E do usuário (após tentativa de fetch)
-  // Ou apenas no token se preferir uma verificação mais simples
-  const isAuthenticated = !!token && !!user; // Mais seguro verificar ambos após o fetch inicial
-  // const isAuthenticated = !!token; // Alternativa mais simples
+  const isAuthenticated = !!token && !!user;
 
-  const value = {
+  const contextValue: AuthContextType = {
     user,
     token,
     isAuthenticated,
@@ -123,15 +135,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     register,
   };
 
-  // Mostra um loading global enquanto verifica o token inicial
+  if (isLoading) {
+    return <LoadingSpinner message="Verificando autenticação..." />;
+  }
+
   return (
-    <AuthContext.Provider value={value}>
-      {isLoading ? <div>Verificando autenticação...</div> : children}
+    <AuthContext.Provider value={contextValue}>
+      {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook customizado para usar o contexto
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {

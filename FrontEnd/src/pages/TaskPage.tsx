@@ -24,12 +24,10 @@ function TaskPage() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [filter, setFilter] = useState<'todas' | 'ativas' | 'concluidas'>('todas');
 
-  // Buscar tarefas ao carregar a página
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  // Aplicar filtro sempre que a lista de tarefas ou o filtro mudar
   useEffect(() => {
     filterTasks();
   }, [tasks, filter]);
@@ -39,12 +37,10 @@ function TaskPage() {
       setLoading(true);
       setError(null);
 
-      // Buscamos diretamente da API para garantir que estamos recebendo as tags
       const response = await api.get('/tasks/list');
       
       if (response.data) {
         console.log("Tarefas recebidas:", response.data);
-        // Verificamos se cada tarefa tem tags
         setTasks(response.data);
       }
     } catch (err: any) {
@@ -70,7 +66,6 @@ function TaskPage() {
       let savedTask: Task;
       
       if (editingTask) {
-        // Atualizar tarefa existente
         savedTask = await updateTask(task.id, {
           title: task.title,
           status: task.status,
@@ -78,18 +73,15 @@ function TaskPage() {
           description: task.description
         });
         
-        // Se há tags selecionadas, atualizamos as tags
         if (task.tags && task.tags.length > 0) {
           try {
             const tagIds = task.tags.map(tag => tag.id);
             console.log("Adicionando tags à tarefa:", tagIds);
             
-            // Adicione cada tag individualmente para garantir compatibilidade
             for (const tagId of tagIds) {
               await api.put(`/tasks/add/${task.id}/tags`, { tagIds: tagId });
             }
             
-            // Atualize o estado local diretamente sem fazer nova requisição
             const updatedTask = {
               ...savedTask,
               tags: task.tags
@@ -98,7 +90,6 @@ function TaskPage() {
             setTasks(tasks.map(t => t.id === task.id ? updatedTask : t));
           } catch (tagError) {
             console.error("Erro ao adicionar tags:", tagError);
-            // Mesmo com erro nas tags, a tarefa foi atualizada
             setTasks(tasks.map(t => t.id === task.id ? savedTask : t));
             alert("A tarefa foi atualizada, mas houve um problema ao atualizar as etiquetas.");
           }
@@ -108,7 +99,6 @@ function TaskPage() {
         
         setEditingTask(null);
       } else {
-        // Criar nova tarefa
         savedTask = await createTask({
           title: task.title,
           status: task.status,
@@ -116,18 +106,15 @@ function TaskPage() {
           description: task.description
         });
         
-        // Se há tags selecionadas, associamos à tarefa criada
         if (task.tags && task.tags.length > 0) {
           try {
             const tagIds = task.tags.map(tag => tag.id);
             console.log("Adicionando tags à nova tarefa:", tagIds);
             
-            // Adicione cada tag individualmente
             for (const tagId of tagIds) {
               await api.put(`/tasks/add/${savedTask.id}/tags`, { tagIds: tagId });
             }
             
-            // Atualize o estado local diretamente
             const newTaskWithTags = {
               ...savedTask,
               tags: task.tags
@@ -136,7 +123,6 @@ function TaskPage() {
             setTasks([...tasks, newTaskWithTags]);
           } catch (tagError) {
             console.error("Erro ao adicionar tags:", tagError);
-            // Mesmo com erro nas tags, a tarefa foi criada
             setTasks([...tasks, savedTask]);
             alert("A tarefa foi criada, mas houve um problema ao adicionar as etiquetas.");
           }

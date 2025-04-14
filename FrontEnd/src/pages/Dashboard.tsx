@@ -1,34 +1,30 @@
-// filepath: c:\Users\joaop\Desktop\TSIF - Desafio_BackEnd\FrontEnd\src\pages\Dashboard.tsx
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Importa o hook do contexto
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Dashboard() {
-  const { user, logout } = useAuth(); // Obtém o usuário e a função logout do contexto
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout(); // Chama a função de logout do contexto
-    navigate('/login'); // Redireciona após o logout
-  };
+  const { user } = useAuth();
 
   return (
-    <div>
-      {/* Verifica se 'user' existe antes de tentar acessar 'user.name' */}
-      <h2>Dashboard - Bem-vindo(a), {user ? user.name : 'Usuário'}!</h2>
-      <p>Esta é a sua área principal após o login.</p>
+    <div className="dashboard-content">
+      <h1 className="dashboard-welcome">Bem-vindo(a), {user?.name || 'Usuário'}!</h1>
+      <p>Gerencie suas tarefas e etiquetas de forma eficiente.</p>
 
-      <nav>
-        <Link to="/tasks">Ver Tarefas</Link> | <Link to="/tags">Ver Etiquetas</Link>
-      </nav>
-
-      <hr />
-
-      {/* Botão de Logout */}
-      <button onClick={handleLogout}>Sair</button>
-
-      {/* Você pode adicionar resumos ou outros componentes aqui */}
-
+      <div className="dashboard-cards">
+        <Link to="/tasks" className="dashboard-card">
+          <h3 className="dashboard-card-title">Gerenciar Tarefas</h3>
+          <p className="dashboard-card-body">
+            Crie, edite e organize suas tarefas por prioridade e status.
+          </p>
+        </Link>
+        
+        <Link to="/tags" className="dashboard-card">
+          <h3 className="dashboard-card-title">Gerenciar Etiquetas</h3>
+          <p className="dashboard-card-body">
+            Personalize etiquetas coloridas para organizar suas tarefas por categoria.
+          </p>
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,108 @@
+/* Estilos gerais adicionais */
+.main-content {
+    padding-top: 64px; /* Altura da navbar */
+    min-height: calc(100vh - 64px);
+  }
+  
+  /* Classe para centralizar conteúdo */
+  .page-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 64px);
+    padding: var(--spacing-md);
+  }
+  
+  /* Estilo para página inicial */
+  .home-page {
+    text-align: center;
+    padding: var(--spacing-xl);
+  }
+  
+  .home-logo {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .home-logo svg {
+    width: 120px;
+    height: 120px;
+    color: var(--primary-color);
+  }
+  
+  .home-title {
+    font-size: var(--font-size-xlarge);
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .home-subtitle {
+    font-size: var(--font-size-medium);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .home-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* Estilo para dashboard */
+  .dashboard-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .dashboard-welcome {
+    font-size: var(--font-size-large);
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+  }
+  
+  .dashboard-card {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .dashboard-card-title {
+    color: var(--primary-color);
+    font-size: var(--font-size-medium);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .dashboard-card-body {
+    color: var(--text-secondary);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .home-buttons {
+      flex-direction: column;
+      width: 100%;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .dashboard-cards {
+      grid-template-columns: 1fr;
+    }
+  }

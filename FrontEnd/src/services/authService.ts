@@ -1,6 +1,5 @@
 import api from '../lib/axios';
 
-// Exportando as interfaces
 export interface LoginCredentials {
   email: string;
   password: string;

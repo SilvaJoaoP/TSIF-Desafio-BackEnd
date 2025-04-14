@@ -1,21 +1,35 @@
-// filepath: c:\Users\joaop\Desktop\TSIF - Desafio_BackEnd\FrontEnd\src\pages\Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-// Você pode importar o useAuth aqui se quiser mostrar informações diferentes para usuários logados/deslogados
-// import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
-  // const { user } = useAuth(); // Exemplo de como usar o contexto
+  const { isAuthenticated } = useAuth();
 
   return (
-    <div>
-      <h1>Bem-vindo ao Gerenciador de Tarefas</h1>
-      <p>Organize suas tarefas e etiquetas de forma eficiente.</p>
-      <nav>
-        <Link to="/login">Login</Link> | <Link to="/register">Registro</Link>
-        {/* Você pode adicionar links para /dashboard, /tasks, etc. aqui,
-            talvez condicionalmente se o usuário estiver logado */}
-      </nav>
+    <div className="page-center home-page">
+      <div className="home-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5"></path>
+          <path d="M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <h1 className="home-title">Gerenciador de Tarefas</h1>
+      <p className="home-subtitle">Organize suas tarefas e aumente sua produtividade</p>
+      
+      <div className="home-buttons">
+        {isAuthenticated ? (
+          <>
+            <Link to="/dashboard" className="btn btn-primary">Ir para Dashboard</Link>
+            <Link to="/tasks" className="btn btn-secondary">Minhas Tarefas</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="btn btn-primary">Entrar</Link>
+            <Link to="/register" className="btn btn-secondary">Criar Conta</Link>
+          </>
+        )}
+      </div>
     </div>
   );
 }

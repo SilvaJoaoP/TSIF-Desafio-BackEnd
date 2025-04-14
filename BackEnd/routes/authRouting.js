@@ -78,9 +78,8 @@ router.post('/login', async (req, res) => {
 
 router.get("/verify", async (req, res) => {
     try {
-      // authMiddleware já verificou o token e adicionou req.user
       const user = await User.findByPk(req.user.id, {
-        attributes: ['id', 'name', 'email'] // Exclui a senha e outros campos sensíveis
+        attributes: ['id', 'name', 'email'] 
       });
       
       if (!user) {

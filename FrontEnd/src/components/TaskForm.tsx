@@ -9,7 +9,6 @@ interface TaskFormProps {
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ onTaskSaved, editingTask = null, onCancelEdit }) => {
-  // Estados do formulário
   const [title, setTitle] = useState(editingTask?.title || '');
   const [status, setStatus] = useState<'Em andamento' | 'Finalizado'>(
     editingTask?.status || 'Em andamento'
@@ -18,15 +17,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskSaved, editingTask = null, on
   const [description, setDescription] = useState(editingTask?.description || '');
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   
-  // Estados para manipulação de tags
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [isLoadingTags, setIsLoadingTags] = useState(false);
   
-  // Estado para erros e envio
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Buscar tags disponíveis quando o componente monta
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -34,7 +30,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskSaved, editingTask = null, on
         const tags = await getTags();
         setAvailableTags(tags);
         
-        // Se estivermos editando, pré-selecione as tags existentes
         if (editingTask?.tags) {
           setSelectedTags(editingTask.tags.map(tag => tag.id));
         }
@@ -66,31 +61,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskSaved, editingTask = null, on
     setIsSubmitting(true);
 
     try {
-      // Criar objeto de dados para enviar
       const taskData: CreateTaskDTO = {
         title,
         status,
         priority,
         description: description || undefined
       };
-      
-      // Estamos apenas simulando aqui - na implementação real, chame os serviços
-      // const savedTask = editingTask 
-      //   ? await updateTask(editingTask.id, taskData)
-      //   : await createTask(taskData);
-      
-      // Se há tags selecionadas, adicione-as à tarefa
-      // if (selectedTags.length > 0 && savedTask.id) {
-      //   await addTagsToTask(savedTask.id, selectedTags);
-      //   
-      //   // Busque a tarefa novamente para obter os dados atualizados com tags
-      //   const updatedTask = await getTaskById(savedTask.id);
-      //   onTaskSaved(updatedTask);
-      // } else {
-      //   onTaskSaved(savedTask);
-      // }
 
-      // Simulação para testes
       const mockTask: Task = {
         id: editingTask?.id || Math.floor(Math.random() * 1000),
         title,
@@ -104,7 +81,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskSaved, editingTask = null, on
       
       onTaskSaved(mockTask);
       
-      // Limpar o formulário
       if (!editingTask) {
         setTitle('');
         setStatus('Em andamento');

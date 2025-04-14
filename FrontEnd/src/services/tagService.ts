@@ -1,31 +1,27 @@
 import api from '../lib/axios';
 
-// Interface para a Tag
 export interface Tag {
   id: number;
   name: string;
-  color: string;  // Adicionado campo obrigatório de cor
+  color: string;  
   userId?: number;
   createdAt?: string;
   updatedAt?: string;
 }
 
-// Interface para criação de Tag
 export interface CreateTagDTO {
   name: string;
-  color: string;  // Adicionado campo obrigatório de cor
+  color: string;  
 }
 
-// Interface para atualização de Tag
 export interface UpdateTagDTO {
   name: string;
-  color: string;  // Adicionado campo obrigatório de cor
+  color: string; 
 }
 
-// Buscar todas as tags do usuário
 export const getTags = async (): Promise<Tag[]> => {
   try {
-    const response = await api.get<Tag[]>('/tags/list');  // Corrigido conforme teste.txt
+    const response = await api.get<Tag[]>('/tags/list');  
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar tags:', error);
@@ -33,7 +29,6 @@ export const getTags = async (): Promise<Tag[]> => {
   }
 };
 
-// Buscar uma tag específica
 export const getTagById = async (id: number): Promise<Tag> => {
   try {
     const response = await api.get<Tag>(`/tags/${id}`);
@@ -44,10 +39,9 @@ export const getTagById = async (id: number): Promise<Tag> => {
   }
 };
 
-// Criar uma nova tag
 export const createTag = async (tag: CreateTagDTO): Promise<Tag> => {
   try {
-    const response = await api.post<Tag>('/tags/create', tag);  // Corrigido conforme teste.txt
+    const response = await api.post<Tag>('/tags/create', tag);  
     return response.data;
   } catch (error) {
     console.error('Erro ao criar tag:', error);
@@ -55,10 +49,9 @@ export const createTag = async (tag: CreateTagDTO): Promise<Tag> => {
   }
 };
 
-// Atualizar uma tag existente
 export const updateTag = async (id: number, tag: UpdateTagDTO): Promise<Tag> => {
   try {
-    const response = await api.put<Tag>(`/tags/update/${id}`, tag);  // Corrigido conforme teste.txt
+    const response = await api.put<Tag>(`/tags/update/${id}`, tag);
     return response.data;
   } catch (error) {
     console.error(`Erro ao atualizar tag ${id}:`, error);
@@ -66,10 +59,9 @@ export const updateTag = async (id: number, tag: UpdateTagDTO): Promise<Tag> => 
   }
 };
 
-// Excluir uma tag
 export const deleteTag = async (id: number): Promise<void> => {
   try {
-    await api.delete(`/tags/delete/${id}`);  // Corrigido conforme teste.txt
+    await api.delete(`/tags/delete/${id}`); 
   } catch (error) {
     console.error(`Erro ao excluir tag ${id}:`, error);
     throw error;

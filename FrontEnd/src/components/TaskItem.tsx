@@ -20,11 +20,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onStatusCha
     onStatusChange(task.id, newStatus);
   };
 
-  // Determinando a cor de prioridade
   const getPriorityColor = () => {
-    if (task.priority >= 5) return '#ff4d4d'; // Vermelho para alta prioridade
-    if (task.priority >= 3) return '#ffa64d'; // Laranja para média prioridade
-    return '#4caf50'; // Verde para baixa prioridade
+    if (task.priority >= 5) return '#ff4d4d'; 
+    if (task.priority >= 3) return '#ffa64d'; 
+    return '#4caf50'; 
   };
 
   return (
