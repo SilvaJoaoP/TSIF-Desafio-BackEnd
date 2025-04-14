@@ -1,0 +1,22 @@
+// filepath: c:\Users\joaop\Desktop\TSIF - Desafio_BackEnd\FrontEnd\tsconfig.json
+{
+    "compilerOptions": {
+      "target": "ESNext", // Ou "ES2020", "ES2021", etc.
+      "useDefineForClassFields": true,
+      "lib": ["DOM", "DOM.Iterable", "ESNext"],
+      "allowJs": false,
+      "skipLibCheck": true,
+      "esModuleInterop": true, // Habilita interoperabilidade com módulos CommonJS
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "ESNext",
+      "moduleResolution": "Node", // Ou "Bundler" se usar Vite >= 4.3
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noEmit": true, // Vite cuida da transpilação e build
+      "jsx": "react-jsx" // Habilita a nova transformação JSX do React
+    },
+    "include": ["src", "vite.config.ts"], // Inclui arquivos na pasta src e o vite.config.ts
+    "references": [{ "path": "./tsconfig.node.json" }] // Necessário para o Vite
+  }

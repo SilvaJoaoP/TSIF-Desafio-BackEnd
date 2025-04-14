@@ -1,0 +1,11 @@
+// filepath: c:\Users\joaop\Desktop\TSIF - Desafio_BackEnd\FrontEnd\tsconfig.node.json
+{
+    "compilerOptions": {
+      "composite": true,
+      "skipLibCheck": true,
+      "module": "ESNext",
+      "moduleResolution": "Node", // Ou "Bundler"
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["vite.config.ts"]
+  }
