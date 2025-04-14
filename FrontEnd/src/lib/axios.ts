@@ -1,23 +1,31 @@
-// filepath: c:\Users\joaop\Desktop\TSIF - Desafio_BackEnd\FrontEnd\src\lib\axios.ts
 import axios from 'axios';
 
-// Substitua '5000' pela porta real onde seu backend está rodando
-const API_URL = 'http://localhost:5000'; // Ajuste a URL base conforme necessário
+// Add type declaration for Vite's import.meta
+declare global {
+  interface ImportMeta {
+    env: Record<string, any>;
+  }
+}
+
+// Usar a variável de ambiente para a URL da API
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Opcional: Interceptor para adicionar o token JWT automaticamente nas requisições
-api.interceptors.request.use(async (config) => {
-  // Lógica para pegar o token (do localStorage, context, etc.)
-  const token = localStorage.getItem('authToken'); // Exemplo: pegando do localStorage
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// Configurar interceptor para adicionar token automaticamente
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+);
 
 export default api;

@@ -22,7 +22,6 @@ interface LoginCredentials {
   password: string;
 }
 
-  login: (credentials: LoginCredentials) => Promise<void>;
 interface AuthContextType {
   user: User | null;
   token: string | null;

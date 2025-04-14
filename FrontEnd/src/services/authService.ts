@@ -1,19 +1,18 @@
 import api from '../lib/axios';
 
-// Tipagem para os dados de entrada (ajustado para usar password)
-interface LoginCredentials {
+// Exportando as interfaces
+export interface LoginCredentials {
   email: string;
-  password: string; // Alterado de pass para password para combinar com o modelo User
+  password: string;
 }
 
-interface RegisterData {
+export interface RegisterData {
   name: string;
   email: string;
-  password: string; // Alterado de pass para password para combinar com o modelo User
+  password: string;
 }
 
-// Tipagem para a resposta esperada
-interface AuthResponse {
+export interface AuthResponse {
   token: string;
   user: {
     id: number;
